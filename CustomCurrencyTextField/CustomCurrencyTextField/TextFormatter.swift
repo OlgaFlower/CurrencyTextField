@@ -16,8 +16,8 @@ final class TextFormatter {
     static func textToCurrency(_ inputString: String) -> String {
         
         var formattedAmount = ""
-        let decimalSeparator = Constants.decimalSeparator
-        let groupingSeparator = Constants.groupingSeparator
+        let decimalSeparator = Locale.current.decimalSeparator ?? "."
+        let groupingSeparator = Locale.current.groupingSeparator ?? ","
         
         // Remove non-numeric characters
         let cleanAmount = inputString.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)

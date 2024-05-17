@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-
-import SwiftUI
 import Combine
 
 struct ContentView: View {
@@ -18,7 +16,8 @@ struct ContentView: View {
     @State private var displyedNumber = "0,00"
     
     // MARK: - Properties -
-    let currency: String = "UAH"
+    let currency: String = "EUR"
+    let decimalSeparator = Locale.current.decimalSeparator ?? "."
     
     // MARK: - Body -
     var body: some View {
@@ -63,28 +62,44 @@ struct ContentView: View {
                                 }
                             }
                             .onChange(of: inputAmount) {
-                                // Format the input amount as currency
-                                if inputAmount.count > 2 {
-                                    displyedNumber = TextFormatter.textToCurrency(inputAmount)
-                                }
-                                if inputAmount.isEmpty {
-                                    displyedNumber = "0\(Constants.decimalSeparator)00"
-                                }
-                                if inputAmount.count == 1 {
-                                    displyedNumber = "0\(Constants.decimalSeparator)0\(inputAmount)"
-                                }
-                                if inputAmount.count == 2 {
-                                    displyedNumber = "0\(Constants.decimalSeparator)\(inputAmount)"
-                                }
+                                /// Option 1
+//                                self.displyedNumber = self.stringFormatter1(inputAmount)
+                                
+                                /// Option 2
+                                self.displyedNumber = self.stringFormatter2(inputAmount)
                             }
                     }
                 }
             }
-            
         }
         .onTapGesture {
             self.isKeyboardFocused = false
         }
+    }
+    
+    // MARK: - Option 1
+    private func stringFormatter1(_ input: String) -> String {
+        if input.count > 2 {
+            return TextFormatter.textToCurrency(inputAmount)
+        }
+        if input.isEmpty {
+            return "0\(self.decimalSeparator)00"
+        }
+        if input.count == 1 {
+            return "0\(self.decimalSeparator)0\(inputAmount)"
+        }
+        if input.count == 2 {
+            return "0\(self.decimalSeparator)\(inputAmount)"
+        }
+        return "0,00"
+    }
+    
+    // MARK: - Oprion 2
+    private func stringFormatter2(_ input: String) -> String {
+        if let num = Int(input) {
+            return String(describing: Double(num)/100).formatAsCurrency()
+        }
+        return "0,00"
     }
 }
 
